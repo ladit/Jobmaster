@@ -1,0 +1,10 @@
+/jmvenv
+/.idea
+
+*.db
+*.sqlite3
+
+*.pyc
+*.swp
+
+.envrc
