@@ -1,4 +1,5 @@
 /jmvenv
+/static
 /.idea
 /.vagrant
 
@@ -6,8 +7,6 @@
 /frontend/dist
 /frontend/src/config/*.tmp
 /frontend/src/config/env.js
-/frontend/index.html
-/frontend/index_prod.html
 
 *.db
 *.sqlite3
