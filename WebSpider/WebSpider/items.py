@@ -19,6 +19,7 @@ class JobItem(scrapy.Item):
     company_name = scrapy.Field()  # 公司名称
     company_ind = scrapy.Field()  # 公司行业
     company_size = scrapy.Field()  # 公司规模
+    job_url = scrapy.Field()
 
 
 class CnblogItem(scrapy.Item):
