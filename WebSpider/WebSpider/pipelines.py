@@ -7,6 +7,27 @@
 
 import pymysql
 
+# 定义全局Url 单个网站的url去重
+all_urls = set()
+
+
+def set_urls(urls):
+    global all_urls
+    all_urls = urls
+
+
+def get_urls():
+    global all_urls
+    return all_urls
+
+
+def checkduplicate(url):
+    global all_urls
+    if url in all_urls:
+        return True
+    else:
+        return False
+
 
 class JobPipeline(object):
     quotes_name = 'quotes'
@@ -20,9 +41,10 @@ class JobPipeline(object):
         if spider.name == "zlzp":
             sql = "insert into job (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             # 执行sql语句
-            self.cursor.execute(sql, (item['job_name'], item['job_pay'],item['job_workplace'], item['job_dec'],
-                                      item['job_min_edu'],item['job_exp'],item['company_welfare'],item['company_name'],
-                                      item['company_ind'],item['company_size'],))
+            self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
+                                      item['job_min_edu'], item['job_exp'], item['company_welfare'],
+                                      item['company_name'],
+                                      item['company_ind'], item['company_size'],))
         elif spider.name == "author":
             pass
             # sqltext = self.authorInsert.format(
@@ -52,6 +74,9 @@ class JobPipeline(object):
 
         # 通过cursor执行增删查改
         self.cursor = self.connect.cursor()
+        self.cursor.execute("select job_url from job")
+        data = self.cursor.fetchall()  # 将所有的查询结果返回为元组
+        set_urls(set(data))
         self.connect.autocommit(True)
 
     def close_spider(self, spider):
