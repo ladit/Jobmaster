@@ -20,11 +20,14 @@ class JobSpider(scrapy.Spider):
 
     def parse(self, response):
         links = response.xpath('//td[@class="zwmc"]/div/a[1]/@href').extract()
+        # 获取了所有的链接
         for link in links:
+            # 初始化item
             item = JobItem()
             for field in item.fields:
                 item[field] = None
 
+            item['job_issue'] = 'zlzp'
             item['job_url'] = link
             yield Request(link, callback=self.parse_job, headers=self.headers,meta={'item':item} )
 
