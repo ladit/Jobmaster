@@ -38,7 +38,7 @@ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 
 修改 pip 源为国内源：<https://mirrors.ustc.edu.cn/help/pypi.html>
 
-安装 NodeJS、NPM，Ubuntu 源太旧，使用官网脚本：
+安装 NodeJS、NPM，Ubuntu 源太旧，使用官网脚本：
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
@@ -81,10 +81,10 @@ python3 -m venv jmvenv
 source jmvenv/bin/activate
 ```
 
-在虚拟环境下安装 django、scrapy：
+在虚拟环境下安装 django、scrapy、PyMySQL：
 
 ```bash
-pip install django scrapy
+pip install django scrapy PyMySQL
 ```
 
 在 `Jobmaster/frontend` 下：
@@ -97,10 +97,12 @@ npm run build
 在 `Jobmaster` 下：
 
 ```bash
+python manage.py check
+python manage.py migrate
 python manage.py collectstatic
 ```
 
-创建 uwsgi socket 文件夹（根据 uwsgi.ini）：
+创建 uwsgi socket 文件夹（根据 uwsgi.ini），可以在 `/etc/rc.local` 里写入，每次启动自动创建：
 
 ```bash
 sudo mkdir /var/run/uwsgi
