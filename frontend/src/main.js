@@ -11,6 +11,10 @@ import 'iview/dist/styles/iview.css';
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts 
 
+
+
+import 'echarts/map/js/china.js'
+
 Vue.use(VueRouter);
 Vue.use(iView);
 
