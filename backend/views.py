@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 
-# Create your views here.
+
+def test(request):
+    test_json = {'hello': 'world', 'this': 'is test'}
+    return JsonResponse(test_json)
