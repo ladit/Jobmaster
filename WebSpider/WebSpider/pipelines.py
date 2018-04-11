@@ -7,7 +7,10 @@
 import re
 
 import pymysql
+from builtins import isinstance
 from scrapy.exceptions import DropItem
+
+from .items import JobItem, HandledJobItem
 
 
 class JobPipeline(object):
@@ -19,23 +22,25 @@ class JobPipeline(object):
 
     def process_item(self, item, spider):
         # print(item)
-        query_sql = "SELECT company_name,job_issue FROM job WHERE company_name LIKE %s"
+        query_sql = "SELECT company_name,job_issue FROM backend_job WHERE company_name LIKE %s"
         self.cursor.execute(query_sql, ('%' + item['company_name'] + '%'))
         result = self.cursor.fetchall()
-        result2 = self.cursor.execute('SELECT * FROM job WHERE job_url = %s', (item['job_url']))
+        result2 = self.cursor.execute('SELECT * FROM backend_job WHERE job_url = %s', (item['job_url']))
         if result2:
-            raise DropItem('you have crawled one in ',item['job_url'])
+            raise DropItem('you have crawled one in ', item['job_url'])
         elif result and result[0][1] != str(spider.name):
             raise DropItem('company has crawled in ', result[0]['job_issue'], 'but now ' + spider.name)
         else:
-            sql = "insert into job (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url,job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            # 执行sql语句
-            self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
-                                      item['job_min_edu'], item['job_exp'], item['company_welfare'],
-                                      item['company_name'],
-                                      item['company_ind'], item['company_size'],
-                                      item['job_url'], item['job_issue']))
-            return item
+            # sql = "insert into job (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url,job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            # # 执行sql语句
+            # self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
+            #                           item['job_min_edu'], item['job_exp'], item['company_welfare'],
+            #                           item['company_name'],
+            #                           item['company_ind'], item['company_size'],
+            #                           item['job_url'], item['job_issue']))
+            if isinstance(item, JobItem):
+                item.save()
+                return item
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -191,14 +196,17 @@ class JobPrePipeline(object):
                 item['job_exp'] = r
             else:
                 item['job_exp'] = 0
-        sql = "insert into job_pre (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url, job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        # 执行sql语句
-        self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
-                                  item['job_min_edu'], item['job_exp'], item['company_welfare'],
-                                  item['company_name'],
-                                  item['company_ind'], item['company_size'],
-                                  item['job_url'], item['job_issue']))
-        return item
+        if isinstance(item, HandledJobItem):
+            item.save()
+            return item
+
+        # sql = "insert into job_pre (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url, job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        # # 执行sql语句
+        # self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
+        #                           item['job_min_edu'], item['job_exp'], item['company_welfare'],
+        #                           item['company_name'],
+        #                           item['company_ind'], item['company_size'],
+        #                           item['job_url'], item['job_issue']))
 
     @classmethod
     def from_crawler(cls, crawler):
