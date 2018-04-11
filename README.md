@@ -24,21 +24,7 @@
 
 修改 Ubuntu 软件源为国内源：<https://mirrors.ustc.edu.cn/help/ubuntu.html>
 
-安装 nginx gcc python3-dev mysql-server，gcc 和 python3-dev 用于编译 uwsgi：
-
-```bash
-sudo apt install -y nginx gcc python3-dev mysql-server
-```
-
-Ubuntu 源的 pip 不好，手动安装 pip：
-
-```bash
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
-```
-
-修改 pip 源为国内源：<https://mirrors.ustc.edu.cn/help/pypi.html>
-
-安装 NodeJS、NPM，Ubuntu 源太旧，使用官网脚本：
+NodeJS、NPM，Ubuntu 源太旧，使用官网脚本：
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
@@ -51,14 +37,24 @@ deb https://mirrors.ustc.edu.cn/nodesource/deb/node_8.x xenial main
 deb-src https://mirrors.ustc.edu.cn/nodesource/deb/node_8.x xenial main
 ```
 
+安装 nginx gcc python3-dev mysql-server nodejs，gcc 和 python3-dev 用于编译 uwsgi：
+
 ```bash
-sudo apt install -y nodejs
+sudo apt install -y nginx gcc python3-dev mysql-server nodejs
 ```
 
-修改 npm 源为国内源，在 `~/.bashrc` 加上：
+Ubuntu 源的 pip 不好，手动安装 pip：
 
 ```bash
-alias cnpm="npm —registry=https://registry.npm.taobao.org —cache=$HOME/.npm/.cache/cnpm —disturl=https://npm.taobao.org/dist —userconfig=$HOME/.cnpmrc"
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && sudo python3 get-pip.py && pip install --upgrade pip
+```
+
+修改 pip 源为国内源：<https://mirrors.ustc.edu.cn/help/pypi.html>
+
+修改 npm 源为国内源：
+
+```bash
+sudo npm install -g cnpm --registry=https://registry.npm.taobao.org && sudo cnpm install npm@latest -g
 ```
 
 安装 uwsgi：
@@ -67,11 +63,15 @@ alias cnpm="npm —registry=https://registry.npm.taobao.org —cache=$HOME/.npm/
 sudo pip install uwsgi
 ```
 
+克隆项目：
+
+```bash
+git clone https://github.com/PostRecommenderProject/Jobmaster.git && cd Jobmaster
+```
+
 创建虚拟环境：
 
 ```bash
-git clone https://github.com/PostRecommenderProject/Jobmaster.git
-cd Jobmaster
 python3 -m venv jmvenv
 ```
 
@@ -84,22 +84,37 @@ source jmvenv/bin/activate
 在虚拟环境下安装 django、scrapy、PyMySQL：
 
 ```bash
-pip install django scrapy PyMySQL
+pip install django scrapy PyMySQL scrapy-djangoitem
 ```
 
 在 `Jobmaster/frontend` 下：
 
 ```bash
-npm install
-npm run build
+cnpm install
+cnpm run build
 ```
 
-在 `Jobmaster` 下：
+创建 `jobmaster` 数据库后，在 `Jobmaster` 下：
 
 ```bash
-python manage.py check
 python manage.py migrate
 python manage.py collectstatic
+```
+
+编辑合适的 `uwsgi.ini` 和 `nginx-jobmaster.conf`。
+
+link nginx 配置文件并确认可运行：
+
+```bash
+sudo ln -s /home/vagrant/jobmaster/nginx-jobmaster.conf /etc/nginx/sites-enabled/jobmaster.conf
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+```
+
+载入配置：
+
+```bash
+sudo service nginx restart
 ```
 
 创建 uwsgi socket 文件夹（根据 uwsgi.ini），可以在 `/etc/rc.local` 里写入，每次启动自动创建：
@@ -112,18 +127,4 @@ sudo mkdir /var/run/uwsgi
 
 ```bash
 sudo uwsgi -i uwsgi.ini
-```
-
-link nginx 配置文件并确认可运行：
-
-```bash
-sudo ln -s /home/vagrant/jobmaster/nginx-jobmaster.conf /etc/nginx/sites-enabled/jobmaster.conf
-nginx -t
-```
-
-载入配置：
-
-```bash
-sudo rm -f /etc/nginx/sites-enabled/default
-sudo service nginx restart
 ```
