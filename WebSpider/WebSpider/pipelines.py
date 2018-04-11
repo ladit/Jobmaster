@@ -7,6 +7,7 @@
 import re
 
 import pymysql
+from scrapy.exceptions import DropItem
 
 
 class JobPipeline(object):
@@ -17,15 +18,24 @@ class JobPipeline(object):
         self.settings = settings
 
     def process_item(self, item, spider):
-        print(item)
-        sql = "insert into job (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url, job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        # 执行sql语句
-        self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
-                                  item['job_min_edu'], item['job_exp'], item['company_welfare'],
-                                  item['company_name'],
-                                  item['company_ind'], item['company_size'],
-                                  item['job_url'], item['job_issue']))
-        return item
+        # print(item)
+        query_sql = "SELECT company_name,job_issue FROM job WHERE company_name LIKE %s"
+        self.cursor.execute(query_sql, ('%' + item['company_name'] + '%'))
+        result = self.cursor.fetchall()
+        result2 = self.cursor.execute('SELECT * FROM job WHERE job_url = %s', (item['job_url']))
+        if result2:
+            raise DropItem('you have crawled one in ',item['job_url'])
+        elif result and result[0][1] != str(spider.name):
+            raise DropItem('company has crawled in ', result[0]['job_issue'], 'but now ' + spider.name)
+        else:
+            sql = "insert into job (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url,job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            # 执行sql语句
+            self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
+                                      item['job_min_edu'], item['job_exp'], item['company_welfare'],
+                                      item['company_name'],
+                                      item['company_ind'], item['company_size'],
+                                      item['job_url'], item['job_issue']))
+            return item
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -70,10 +80,11 @@ class JobPrePipeline(object):
             pay = item['job_pay']
             result = re.findall('(\d+)-(\d+)元', pay)
             if result:
-                item['job_pay'] = (int(result[0][0]) + int(result[0][1])) / 2
+                r = (int(result[0][0]) + int(result[0][1])) / 2
+                item['job_pay'] = int(r)
             elif re.findall('(\d+)元', pay):
                 result = re.findall('(\d+)元', pay)
-                item['job_pay'] = int(result[0][0])
+                item['job_pay'] = int(result[0])
 
             exp = item['job_exp']
             result = re.findall('(\d+)-(\d+)年', exp)
@@ -90,13 +101,13 @@ class JobPrePipeline(object):
             pay = item['job_pay']
             result = re.findall('(\d+)k-(\d+)k', pay)
             a = (int(result[0][0]) + int(result[0][1])) * (1000 / 2)
-            item['job_pay'] = a
+            item['job_pay'] = int(a)
             # 计算工作
             s = item['job_exp']
             result = re.findall('(\d+)-(\d+)年', s)
             if result:
                 a = (int(result[0][0]) + int(result[0][1])) / 2
-                item['job_exp'] = a
+                item['job_exp'] = int(a)
             elif re.findall('-(\d+)年', s):
                 result = re.findall('-(\d+)年', s)
                 a = int(result[0][0])
@@ -109,7 +120,7 @@ class JobPrePipeline(object):
                 a = (int(result[0][0]) + int(result[0][1])) * (10000 / 24)
             else:
                 a = 0
-            item['job_pay'] = a
+            item['job_pay'] = int(a)
             # 计算工作
             s = item['job_exp']
             result = re.findall('(\d+)年.*?', s)
@@ -118,7 +129,68 @@ class JobPrePipeline(object):
                 item['job_exp'] = a
             else:
                 item['job_exp'] = 0
+        if spider.name == 'job51':
+            # 计算工资
+            pay = item['job_pay']
+            result = re.findall('(\d+\.?\d*)-(\d+)万/年', pay)
+            if result:
+                r = (float(result[0][0]) + float(result[0][1])) / 12 * 10000
+                r = r / 2
+                item['job_pay'] = int(r)
+            elif re.findall('(\d+\.?\d*)-(\d+\.?\d*)万/月', pay):
+                result = re.findall('(\d+\.?\d*)-(\d+\.?\d*)万/月', pay)
+                r = (float(result[0][0]) + float(result[0][1])) * 10000
+                r = r / 2
+                item['job_pay'] = int(r)
+            elif re.findall('(\d+\.?\d*)-(\d+\.?\d*)千/月', pay):
+                result = re.findall('(\d+\.?\d*)-(\d+\.?\d*)千/月', pay)
+                r = (float(result[0][0]) + float(result[0][1]))
+                r = r / 2
+                item['job_pay'] = int(r)
+            elif re.findall('(\d+)元/天', pay):
+                result = re.findall('(\d+)元/天', pay)
+                r = float(result[0]) * 20
+                item['job_pay'] = int(r)
 
+            # 计算工作经验
+            exp = item['job_exp']
+            result = re.findall('(\d+)年工作经验', exp)
+            if result:
+                f = float(result[0])
+                item['job_exp'] = int(f)
+            elif re.findall('(\d+)-(\d+)年经验', exp):
+                result = re.findall('(\d+)-(\d+)年经验', exp)
+                f = int(result[0][0]) + int(result[0][1])
+                f = f / 2
+                item['job_exp'] = int(f)
+            elif re.findall('(\d+)年以上经验', exp):
+                result = re.findall('(\d+)年以上经验', exp)
+                f = float(result[0])
+                item['job_exp'] = int(f)
+            else:
+                item['job_exp'] = 0
+            # 计算最低学历
+        if spider.name == 'boss':
+            pay = item['job_pay']
+            result = re.findall('(\d+)K-(\d+)K', pay)
+            if result:
+                r = int(result[0][1]) + int(result[0][0])
+                r = r / 2
+                item['job_pay'] = int(r)
+            else:
+                item['job_pay'] = 0
+            exp = item['job_exp']
+            result = re.findall('(\d+)-(\d+)年', exp)
+            if result:
+                r = int(result[0][0]) + int(result[0][1])
+                r = r / 2
+                item['job_exp'] = int(r)
+            elif re.findall('(\d+)年.*?', exp):
+                result = re.findall('(\d+)年.*?', exp)
+                r = int(result[0])
+                item['job_exp'] = r
+            else:
+                item['job_exp'] = 0
         sql = "insert into job_pre (job_name,job_pay,job_workplace,job_dec,job_min_edu,job_exp,company_welfare,company_name,company_ind,company_size,job_url, job_issue) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         # 执行sql语句
         self.cursor.execute(sql, (item['job_name'], item['job_pay'], item['job_workplace'], item['job_dec'],
@@ -153,11 +225,15 @@ class JobPrePipeline(object):
 
 
 def get_edu(edu):
-    edus = ['不限', '中技', '中专' '大专', '本科', '硕士', '博士', ]
+    if edu == '统招本科':
+        edu = '本科'
+    if len(edu) > 2:
+        edu = edu[0:2]
+    edus = ['不限', '中技', '中专', '高中', '大专', '本科', '硕士', '博士', ]
     try:
         a = edus.index(edu)
     except ValueError:
-        print(233)
+        print(edu)
         a = 0
     return a
 
@@ -506,4 +582,4 @@ def get_zone(zone_name):
         result = re.findall('' + zone_name[0:2] + '.*? (\d+)', s)
         return int(result[0])
     else:
-        result - 1
+        return -1
