@@ -9,11 +9,24 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 # Mysql数据库的配置信息
-MYSQL_HOST = '127.0.0.1'
-MYSQL_DBNAME = 'mydatabase'  # 数据库名字，请修改
-MYSQL_USER = 'root'  # 数据库账号，请修改
-MYSQL_PASSWD = 'xiongmysql'  # 数据库密码，请修改
-MYSQL_PORT = 3306  # 数据库端口，在dbhelper中使用
+
+import os, django
+import sys
+
+from django.conf import settings
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(BASE_DIR)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jobmaster.settings")
+django.setup()
+
+database = settings.DATABASES['default']
+
+MYSQL_HOST = database['HOST']
+MYSQL_DBNAME = database['NAME']  # 数据库名字，请修改
+MYSQL_USER = database['USER']  # 数据库账号，请修改
+MYSQL_PASSWD = database['PASSWORD']  # 数据库密码，请修改
+MYSQL_PORT = database['PORT']  # 数据库端口，在dbhelper中使用
 
 BOT_NAME = 'WebSpider'
 
@@ -25,7 +38,6 @@ ITEM_PIPELINES = {
     'WebSpider.pipelines.JobPipeline': 300,
     'WebSpider.pipelines.JobPrePipeline': 301,
 }
-
 
 DOWNLOAD_DELAY = 2
 RANDOMIZE_DOWNLOAD_DELAY = True
