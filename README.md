@@ -37,10 +37,10 @@ deb https://mirrors.ustc.edu.cn/nodesource/deb/node_8.x xenial main
 deb-src https://mirrors.ustc.edu.cn/nodesource/deb/node_8.x xenial main
 ```
 
-安装 nginx gcc python3-dev mysql-server nodejs，gcc 和 python3-dev 用于编译 uwsgi：
+安装 nginx gcc python3-dev mysql-server nodejs redis-server，gcc 和 python3-dev 用于编译 uwsgi：
 
 ```bash
-sudo apt install -y nginx gcc python3-dev mysql-server nodejs
+sudo apt install -y nginx gcc python3-dev mysql-server nodejs redis-server
 ```
 
 Ubuntu 源的 pip 不好，手动安装 pip：
@@ -84,7 +84,7 @@ source jmvenv/bin/activate
 在虚拟环境下安装 django、scrapy、PyMySQL：
 
 ```bash
-pip install django scrapy PyMySQL scrapy-djangoitem
+pip install django scrapy PyMySQL scrapy-djangoitem django-rq rq-scheduler sklearn pandas jieba gensim
 ```
 
 在 `Jobmaster/frontend` 下：
@@ -92,6 +92,22 @@ pip install django scrapy PyMySQL scrapy-djangoitem
 ```bash
 cnpm install
 cnpm run build
+```
+
+编辑 `/etc/mysql/my.cnf`：
+
+``` my.cnf
+[client]
+default-character-set=utf8mb4
+
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
+skip-character-set-client-handshake = true
+
+[mysql]
+default-character-set = utf8mb4
 ```
 
 创建 `jobmaster` 数据库后，在 `Jobmaster` 下：
@@ -127,4 +143,16 @@ sudo mkdir /var/run/uwsgi
 
 ```bash
 sudo uwsgi -i uwsgi.ini
+```
+
+启动 redis：
+
+```bash
+redis-server
+```
+
+启动 rqworker：
+
+```bash
+python manage.py rqworker default
 ```
