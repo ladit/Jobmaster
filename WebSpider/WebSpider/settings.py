@@ -10,7 +10,8 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 # Mysql数据库的配置信息
 
-import os, django
+import os
+import django
 import sys
 
 from django.conf import settings

@@ -1,5 +1,6 @@
 /jmvenv
 /static
+/log
 /.idea
 /.vagrant
 
