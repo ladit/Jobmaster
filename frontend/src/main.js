@@ -4,12 +4,16 @@ import VueRouter from 'vue-router';
 import Routers from './router';
 import Util from './libs/util';
 import App from './app.vue';
+import axios from 'axios';  
 import 'iview/dist/styles/iview.css';
 
 
 // 引入echarts
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts 
+
+Vue.prototype.$http = axios;
+Vue.use(VueRouter);
 
 
 

@@ -29,7 +29,6 @@ export default {
   width: 100%;
   padding: 0;
   margin: 0;
-  background: #fdfdfc;
   /* background-image: url('../images/bd.jpg'); */
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -37,7 +36,6 @@ export default {
 
 .layout {
   border: 1px solid #d7dde4;
-  
   /* height: 2000px; */
 }
 
@@ -45,10 +43,10 @@ export default {
   min-height: 200px;
   margin: 15px;
   overflow: hidden;
-  background: #fff;
   border-radius: 4px;
 }
 .layout-footer-center {
   text-align: center;
+  background: whitesmoke;
 }
 </style>

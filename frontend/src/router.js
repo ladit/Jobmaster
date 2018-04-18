@@ -4,6 +4,7 @@ import head from "./template/head.vue";
 import index from "./views/index.vue";
 import post from "./template/post.vue";
 import personal from "./template/personal.vue";
+import test from "./template/test.vue";
 
 const routers = [
   {
@@ -14,6 +15,11 @@ const routers = [
             path: 'post',
             name: 'post',
             component: post,
+        },
+        {
+            path: 'test',
+            name: 'test',
+            component: test,
         },
         {
             path: 'personal',
