@@ -13,11 +13,19 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts 
 
 Vue.prototype.$http = axios;
+
 Vue.use(VueRouter);
+Vue.use(iView);
 
+//请求配置
 
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 import 'echarts/map/js/china.js'
+
+
+
+
 
 Vue.use(VueRouter);
 Vue.use(iView);
@@ -39,6 +47,7 @@ router.afterEach((to, from, next) => {
     iView.LoadingBar.finish();
     window.scrollTo(0, 0);
 });
+
 
 new Vue({
     el: '#app',

@@ -1,52 +1,53 @@
 <template>
+
   <div class="main">
-    <my-head></my-head>
+    <my-head style="position:fixed; left:0;width:100%;top:0;z-index:9999;"></my-head>
+
     <div class="layout">
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
-    <Footer class="layout-footer-center">2018 &copy; 我全都要队</Footer>
+    <Footer class="layout-footer-center">Copyright © 2018 我全都要队 All Rights Reserved</Footer>
 
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {};
-  },
-  components: {
-    myHead: require("../template/head.vue")
-  }
+    data() {
+        return {};
+    },
+    components: {
+        myHead: require("../template/head.vue")
+    }
 };
 </script>
 
 <style scoped>
 .main {
-  height: 770px;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  /* background-image: url('../images/bd.jpg'); */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+    /* min-height: 800px; */
+    height: auto;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    /* background-image: url('../images/bd.jpg'); */
+    background-repeat: no-repeat;
+    /* background-attachment: fixed; */
 }
 
 .layout {
-  border: 1px solid #d7dde4;
-  /* height: 2000px; */
+    position: relative;
+    border: 1px solid #d7dde4;
+    min-height: 728px;
+    /* background-image: url('../images/bmg.jpg'); */
+    background-repeat: no-repeat;
 }
 
-.layout-content {
-  min-height: 200px;
-  margin: 15px;
-  overflow: hidden;
-  border-radius: 4px;
-}
 .layout-footer-center {
-  text-align: center;
-  background: whitesmoke;
+    display: block;
+    text-align: center;
+    background: whitesmoke;
 }
 </style>
