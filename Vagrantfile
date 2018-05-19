@@ -4,8 +4,13 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.box_check_update = false
+  config.vm.graceful_halt_timeout = 10
   config.vm.hostname = "ubuntu"
-  
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 4096
+    v.cpus = 2
+  end
+
   config.ssh.keep_alive = true
 
   # port mapping
@@ -18,4 +23,9 @@ Vagrant.configure("2") do |config|
   # Project folder synchronize using bindfs
   config.vm.synced_folder ".", "/home/vagrant/jobmaster"
   config.bindfs.bind_folder "/home/vagrant/jobmaster", "/home/vagrant/jobmaster"
+  config.bindfs.default_options = {
+    force_user:   'www-data',
+    force_group:  'www-data',
+    perms:        'u=rwx:g=rwx:o=rwx'
+  }
 end
