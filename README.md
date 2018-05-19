@@ -19,6 +19,7 @@
 - uwsgi
 - 8.x NodeJS、npm（用于前端 vue 框架）
 - mysql-server
+- redis-server
 
 ### 步骤
 
