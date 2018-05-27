@@ -35,9 +35,8 @@ def get_recommend(edu, dec, exp):
             vec[word] = [1]
     ans = pd.DataFrame(vec)
     worker = list(kword)
-    # pre = recommend.RFCModel.predict(ans[recommend.dec_keyword][0:])
-    # kind = str(pre[0])
-    kind = '117'
+    pre = recommend.RFCModel.predict(ans[recommend.dec_keyword][0:])
+    kind = str(pre[0])
     ans = {}
     try:
         hj = HandledJob.objects.filter(job_class=kind)

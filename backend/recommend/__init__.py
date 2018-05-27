@@ -21,7 +21,7 @@ dec = {}
 dec_keyword = []
 # 加载岗位描述关键词
 logger.debug("加载岗位描述关键词....")
-read = open(settings.BASE_DIR + "/backend/recommend/word/dec-answer.txt", "r")
+read = open(settings.BASE_DIR + "/backend/recommend/word/dec-answer.txt", "r", encoding="utf-8")
 for word in read.readlines():
     dec_keyword.append(word.strip())
     jieba.add_word(word.strip())
@@ -40,11 +40,18 @@ DocModel = Doc2Vec.load(settings.BASE_DIR + "/backend/recommend/model/DCDEC")
 logger.debug("Doc2Vec model 加载完成!")
 
 # 加载RFC-Dec随机森林模型
-# logger.debug("加载随机森林模型中...")
-# read = open(settings.BASE_DIR + "/backend/recommend/model/randomForest.pkl", "rb")
-# try:
-#     RFCModel = pickle.load(read)
-#     read.close()
-# except Exception as err:
-#     logger.debug("cuowu!!!")
-# logger.debug("随机森林模型加载完成！")
+try:
+    logger.debug("打开randomForest文件中...")
+    read = open(settings.BASE_DIR + "\\backend\\recommend\\model\\randomForest.pkl", "rb")
+    logger.debug("打开randomForest文件完成！")
+except Exception as err:
+    logger.debug("打开randomForest文件失败！")
+    logger.debug(err)
+
+try:
+    logger.debug("加载随机森林模型中...")
+    RFCModel = pickle.load(read)
+    read.close()
+    logger.debug("随机森林模型加载完成！")
+except EOFError:
+    pass
