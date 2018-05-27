@@ -1,7 +1,7 @@
 <template>
 
   <div class="main">
-    <my-head style="position:fixed; left:0;width:100%;top:0;z-index:9999;"></my-head>
+    <my-head style="position:fixed; left:0;width:100%;top:0;z-index:988;"></my-head>
 
     <div class="layout">
       <keep-alive>

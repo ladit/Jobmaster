@@ -4,7 +4,7 @@
       <Menu mode="horizontal" active-name="1">
 
         <img @click="$router.push({name:'homepage'})" class="logo" src="../images/logo.png">
-        <p @click="$router.push({name:'homepage'})" class="layout-title">基于大数据的智能求职分析系统</p>
+        <p @click="$router.push({name:'msignIn'})" class="layout-title">基于大数据的智能求职分析系统</p>
 
         <div class="layout-nav">
           <MenuItem name="1">

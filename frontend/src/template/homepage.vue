@@ -2,8 +2,8 @@
     <div class="container">
         <div class="bmg-cont">
             <h2>P O L E</h2>
-            <h3>Scrapy-Redis分布式爬虫+</h3>
-            <h3>Doc2Vec模型和K-means聚类算法+</h3>
+            <h3>Scrapy-Redis分布式爬虫</h3>
+            <h3>Doc2Vec模型和K-means聚类算法</h3>
             <h3>随机森林算法</h3>
         </div>
         <Carousel :autoplay="true" v-model="value2" :autoplay-speed="4000" loop style="width:100%;height:666px;margin-top:60px;">

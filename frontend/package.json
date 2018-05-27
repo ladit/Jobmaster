@@ -1,5 +1,5 @@
 {
-  "name": "iview-project",
+  "name": "POLE.com",
   "version": "2.1.0",
   "description": "A base project with Vue.js2、Vue-Router、webpack2 and with iView2.",
   "main": "index.js",
@@ -19,6 +19,7 @@
     "echarts": "^4.0.4",
     "echarts-wordcloud": "^1.1.3",
     "iview": "^2.0.0-rc.8",
+    "particles.js": "^2.0.0",
     "vue": "^2.2.6",
     "vue-router": "^2.2.1"
   },
@@ -43,6 +44,7 @@
     "vue-hot-reload-api": "^1.3.3",
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^11.0.0",
+    "vue-particles": "^1.0.9",
     "vue-style-loader": "^1.0.0",
     "vue-template-compiler": "^2.2.1",
     "webpack": "^2.2.1",

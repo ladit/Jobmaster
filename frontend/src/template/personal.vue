@@ -1,52 +1,79 @@
 <template>
     <div class="container">
-        <!-- <video style="width: 100%;height: 100%;" id="video" webkit-playsinline="true" preload="auto" controls="controls" loop="loop">
-            <source id="videoSource" type="video/mp4"> 您的浏览器不支持该视频格式。
-        </video> -->
-        <div style="margin-left:20.2%;margin-top:100px;">
+        <div style="margin-left:22%;margin-top:220px;" v-if="isShow1">
             <textarea v-model="skill" placeholder="个人技能描述……" name="" id="" cols="105" rows="2" style="font-size:16px;color:#888;padding-left:6px;padding-top:2px;border:1px solid #E4E4E4;"></textarea>
         </div>
         <br>
 
-        <div class="input">
-            <Select v-model="edu" style="width:100px;margin-left:20%" placeholder="选择学历">
+        <div class="input" v-if="isShow1">
+            <Select v-model="edu" style="width:100px;margin-left:21.8%" placeholder="选择学历">
                 <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
             <Input v-model="major" placeholder="输入专业" style="width: 150px"></Input>
             <Input v-model="value1" placeholder="输入学校" style="width: 150px"></Input>
             <Input v-model="workplace" placeholder="输入求职地" style="width: 150px"></Input>
             <Input v-model="keyword" placeholder="输入岗位名称" style="width: 150px" on-blur="bb" on-focus="get($event)" @input="get($event)" @keydown.down.prevent="selectDown" @keydown.up.prevent="selectUp"></Input>
-            <ul style="width: 305px;margin-left:57%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
+            <ul style="width: 305px;margin-left:59%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
                 <li style="padding-left:10px; padding:3px 8px;" class="text-center" v-for="(value,index) in myData">
                     <span @click="jump" class="text-success textprimary" :class="{gray:index==now}">{{value}}</span>
                 </li>
             </ul>
             <Input v-model="exp" placeholder="输入工作年限" style="width: 150px"></Input>
-            <Button style="margin-left:20px;margin-top:2px;" type="info" icon="ios-search" @click="btn">匹配查询</Button>
+        </div>
+
+        <div v-if="isShow1">
+            <Button style="margin-left:48%;margin-top:20px;width:6%;" type="info" icon="ios-search" @click="btn">匹配查询</Button>
+        </div>
+        <!-- <video style="width: 100%;height: 100%;" id="video" webkit-playsinline="true" preload="auto" controls="controls" loop="loop">
+            <source id="videoSource" type="video/mp4"> 您的浏览器不支持该视频格式。
+        </video> -->
+        <div style="margin-left:22%;margin-top:100px;" v-if="isShow">
+            <textarea v-model="skill" placeholder="个人技能描述……" name="" id="" cols="105" rows="2" style="font-size:16px;color:#888;padding-left:6px;padding-top:2px;border:1px solid #E4E4E4;"></textarea>
+        </div>
+        <br>
+
+        <div class="input" v-if="isShow">
+            <Select v-model="edu" style="width:100px;margin-left:21.8%" placeholder="选择学历">
+                <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+            <Input v-model="major" placeholder="输入专业" style="width: 150px"></Input>
+            <Input v-model="value1" placeholder="输入学校" style="width: 150px"></Input>
+            <Input v-model="workplace" placeholder="输入求职地" style="width: 150px"></Input>
+            <Input v-model="keyword" placeholder="输入岗位名称" style="width: 150px" on-blur="bb" on-focus="get($event)" @input="get($event)" @keydown.down.prevent="selectDown" @keydown.up.prevent="selectUp"></Input>
+            <ul style="width: 305px;margin-left:59%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
+                <li style="padding-left:10px; padding:3px 8px;" class="text-center" v-for="(value,index) in myData">
+                    <span @click="jump" class="text-success textprimary" :class="{gray:index==now}">{{value}}</span>
+                </li>
+            </ul>
+            <Input v-model="exp" placeholder="输入工作年限" style="width: 150px"></Input>
+        </div>
+
+        <div v-if="isShow">
+            <Button style="margin-left:48%;margin-top:20px;width:6%;" type="info" icon="ios-search" @click="btn">匹配查询</Button>
         </div>
         <br>
         <br>
 
-        <div style="margin-left:100px;margin-top:40px;">
+        <div style="margin-left:100px;margin-top:10px;" v-if="isShow">
             <p style="font-size:22px;font-weight:bold;float:left;color:black">{{job}}待遇水平：</p>
             <p style="font-size:22px;;float:left">{{salary}}</p>
         </div>
         <br>
         <br>
 
-        <div style="margin-left:100px;margin-top:30px;">
+        <div style="margin-left:100px;margin-top:30px;" v-if="isShow">
             <p style="font-size:22px;font-weight:bold;color:black">求职者画像</p>
-            <div id="myChart1" :style="{margin:'0 auto',width: '600px', height: '500px'}"></div>
+            <div id="myChart1" :style="{margin:'0 auto',width: '600px', height: '460px'}"></div>
         </div>
         <br>
 
-        <p style="margin-left:100px;font-size:22px;font-weight:bold;color:black">匹配企业</p>
+        <p style="margin-left:100px;font-size:22px;font-weight:bold;color:black;margin-top:-100px;" v-if="isShow">匹配企业</p>
         <br>
         <br>
         <br>
         <br>
 
-        <div style="margin-left:50px;margin-top:-50px;">
+        <div style="margin-left:50px;margin-top:-50px;" v-if="isShow">
 
             <div class="hover-hidden1">
 
@@ -54,9 +81,10 @@
                     <br>
                     <p style="color: black;font-size:1.3rem;font-weight:bold;text-align:center;">{{item.company_name}}</p>
                     <div class="content">
-                        <p>工资：{{item.payment}}</p>
+                        <p v-if="item.payment>=10">工资：{{item.payment}}</p>
+                        <p v-else="">工资：面议</p>
                         <p>福利：{{item.welfare}}</p>
-                        <p>公司规模：{{item.size}}</p>
+                        <p v-if="item.payment>0">公司规模：{{item.size}}</p>
                         <br>
                         <a v-bind:href="item.url" title="查看详情" target="_blank">匹配概率：{{Number(item.rate*100).toFixed(2)}}%</a>
                         <br>
@@ -84,6 +112,8 @@ import Data from "../libs/test.js";
 export default {
     data() {
         return {
+            isShow1: true,
+            isShow: false,
             job: "",
             classList: [],
             skill: "",
@@ -153,7 +183,9 @@ export default {
             _videoPlay.play();
         },
         cli: function() {
-            window.open("https://jobs.51job.com/beijing-cyq/98792553.html?s=01&t=0");
+            window.open(
+                "https://jobs.51job.com/beijing-cyq/98792553.html?s=01&t=0"
+            );
         },
         jump: function(e) {
             this.keyword = e.target.innerHTML;
@@ -189,12 +221,14 @@ export default {
             this.keyword = this.newData[this.now];
         },
         btn: function() {
+            this.isShow = true;
+            this.isShow1 = false;
             var that = this;
             console.log(that.keyword);
             that.job = that.keyword;
-            that.classList=[];
-            that.leverl1=[];
-            that.leverl2=[];
+            that.classList = [];
+            that.leverl1 = [];
+            that.leverl2 = [];
 
             this.$http({
                 method: "post",
@@ -339,7 +373,7 @@ export default {
 }
 
 .content:hover {
-    background-color: #BCD2EE;
+    background-color: 	#C6E2FF;
 }
 
 .content p {
@@ -354,7 +388,7 @@ export default {
 
 .content a {
     margin-left: 64px;
-    color: #71C093;
+    color: #71c093;
     font-size: 16px;
     position: absolute;
     bottom: 20px;

@@ -1,41 +1,51 @@
 <template>
-    <div class="container" click="click2">
-        <div style="margin-top:100px;">
-            <Input placeholder="输入相关岗位，如大数据、分析师等" size="large" style="width: 400px;margin-left:41%;font-size:20px" v-model="keyword" on-blur="bb" on-focus="get($event)" @input="get($event)" @keydown.down.prevent="selectDown" @keydown.up.prevent="selectUp">
+    <div class="container" >
+        <div style="margin-top:280px;" v-if="isShow1" >
+            <Input placeholder="输入相关岗位，如大数据、分析师等" size="large" style="width: 400px;margin-left:40%;font-size:20px" v-model="keyword" on-blur="bb" on-focus="get($event)" @input="get($event)" @keydown.down.prevent="selectDown" @keydown.up.prevent="selectUp">
             <Button slot="append" icon="ios-search" @click="btn"></Button>
             </Input>
-            <ul style="width: 358.5px;margin-left:41%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
+            <ul style="width: 358.5px;margin-left:40%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
+                <li style="padding-left:10px; padding:3px 8px;" class="text-center" v-for="(value,index) in myData">
+                    <span @click="jump" class="text-success textprimary" :class="{gray:index==now}">{{value}}</span>
+                </li>
+            </ul>
+        </div>
+        <div style="margin-top:100px;" v-if="isShow" >
+            <Input placeholder="输入相关岗位，如大数据、分析师等" size="large" style="width: 400px;margin-left:40%;font-size:20px" v-model="keyword" on-blur="bb" on-focus="get($event)" @input="get($event)" @keydown.down.prevent="selectDown" @keydown.up.prevent="selectUp">
+            <Button slot="append" icon="ios-search" @click="btn"></Button>
+            </Input>
+            <ul style="width: 358.5px;margin-left:40%;font-size:14px;position:absolute;list-style:none; border:1px solid #E8E8E8;">
                 <li style="padding-left:10px; padding:3px 8px;" class="text-center" v-for="(value,index) in myData">
                     <span @click="jump" class="text-success textprimary" :class="{gray:index==now}">{{value}}</span>
                 </li>
             </ul>
         </div>
 
-        <div style="margin-left:100px;margin-top:30px;">
+        <div style="margin-left:100px;margin-top:30px;"  v-if="isShow">
             <p style="font-size:22px;font-weight:bold;float:left;color:black">岗位名称：</p>
             <p style="font-size:22px;;float:left">{{name}}</p>
         </div>
         <br>
 
-        <div style="margin-left:100px;margin-top:30px;">
+        <div style="margin-left:100px;margin-top:30px;"  v-if="isShow">
             <p style="font-size:22px;font-weight:bold;float:left;color:black">最低工作经历要求：</p>
             <p style="font-size:22px;;float:left">{{year}}</p>
         </div>
         <br>
 
-        <div style="margin-left:100px;margin-top:30px;">
+        <div style="margin-left:100px;margin-top:30px;"  v-if="isShow">
             <p style="font-size:22px;font-weight:bold;color:black">岗位描述</p>
             <div id="myChart5" :style="{margin:'0 auto',width: '600px', height: '400px'}"></div>
         </div>
 
-        <div style="margin-left:100px;float:left">
+        <div style="margin-left:100px;float:left"  v-if="isShow">
             <p style="font-size:22px;font-weight:bold;color:black">岗位画像</p>
             <div id="myChart1" :style="{float: 'left',width: '460px', height: '460px'}"></div>
             <div id="myChart2" :style="{float: 'left',width: '460px', height: '460px'}"></div>
             <div id="myChart3" :style="{float: 'left',width: '460px', height: '460px'}"></div>
         </div>
 
-        <div style="margin-left:100px;margin-top:50px;float:left">
+        <div style="margin-left:100px;margin-top:50px;float:left"  v-if="isShow">
             <p style="font-size:22px;font-weight:bold;color:black">工作地分布</p>
             <div id="myChart4" :style="{width: '1000px', height: '800px'}"></div>
         </div>
@@ -43,6 +53,7 @@
     </div>
 
 </template>
+
 
 
 
@@ -62,6 +73,8 @@ import func from "../libs/canvas.js";
 export default {
     data() {
         return {
+            isShow1:true,
+            isShow:false,
             value1: "",
             newData: Data.customData(),
             keyword: "",
@@ -191,6 +204,8 @@ export default {
         },
 
         btn: function() {
+            this.isShow = true;
+            this.isShow1 = false;
             this.name = this.keyword;
             const that = this;
             this.$http({
@@ -850,7 +865,7 @@ export default {
                     {
                         id: "statistic",
                         text: count
-                            ? "平均: " + parseInt((sum / count).toFixed(4))
+                            ? "平均: " + parseInt((sum / count).toFixed(4))+"（个）"
                             : "",
                         right: 120,
                         top: 40,
