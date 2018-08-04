@@ -42,7 +42,7 @@ logger.debug("Doc2Vec model 加载完成!")
 # 加载RFC-Dec随机森林模型
 try:
     logger.debug("打开randomForest文件中...")
-    read = open(settings.BASE_DIR + "\\backend\\recommend\\model\\randomForest.pkl", "rb")
+    read = open(settings.BASE_DIR + "/backend/recommend/model/randomForest.pkl", "rb")
     logger.debug("打开randomForest文件完成！")
 except Exception as err:
     logger.debug("打开randomForest文件失败！")
